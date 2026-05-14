@@ -1,14 +1,13 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+const connectDB = require('./config/db');
 const User = require('./models/User');
 const Medicine = require('./models/Medicine');
 
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/hms_db';
-
 const seedUsers = async () => {
     try {
-        await mongoose.connect(MONGO_URI);
+        await connectDB();
         console.log('Connected to MongoDB for seeding...');
 
         // Clear existing users and medicines

@@ -1,37 +1,35 @@
 const express = require('express');
 const router = express.Router();
-const Patient = require('../models/Patient');
-const User = require('../models/User');
+const patientQueries = require('../config/queries/patientQueries');
+const userQueries = require('../config/queries/userQueries');
 
 // Register a patient
 router.post('/register-patient', async (req, res) => {
     try {
-        const { name, age, gender, contact, temperature, symptoms, assignedDoctor } = req.body;
-        
-        const patient = new Patient({
-            name,
-            age,
-            gender,
-            contact,
-            temperature,
-            symptoms,
-            assignedDoctor
-        });
-
-        await patient.save();
-        res.json({ message: 'Patient registered successfully', patient });
+        const newPatient = await patientQueries.registerPatient(req.body);
+        res.status(201).json(newPatient);
     } catch (err) {
-        res.status(500).json({ message: 'Server error' });
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Get all patients
+router.get('/patients', async (req, res) => {
+    try {
+        const patients = await patientQueries.getAllPatients();
+        res.json(patients);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
     }
 });
 
 // Get all doctors for assignment
 router.get('/doctors', async (req, res) => {
     try {
-        const doctors = await User.find({ role: 'doctor' }).select('name specialization');
+        const doctors = await userQueries.getAllDoctors();
         res.json(doctors);
     } catch (err) {
-        res.status(500).json({ message: 'Server error' });
+        res.status(500).json({ error: err.message });
     }
 });
 
