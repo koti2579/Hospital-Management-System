@@ -1,9 +1,6 @@
 const mongoose = require('mongoose');
 
-/**
- * Establish a secure, persistent connection to MongoDB with connection pooling.
- * @returns {Promise<void>}
- */
+
 const connectDB = async () => {
     const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/hms_db';
     
