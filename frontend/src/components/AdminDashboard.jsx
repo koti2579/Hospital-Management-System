@@ -39,6 +39,7 @@ ChartJS.register(
 
 const AdminDashboard = () => {
     const navigate = useNavigate();
+    const apiUrl = process.env.REACT_APP_API_URL || "https://hospital-management-system-23e0.onrender.com/api";
     const [staff, setStaff] = useState([]);
     const [stats, setStats] = useState({
         totalPatients: 0,
@@ -84,8 +85,8 @@ const AdminDashboard = () => {
         setError(null);
         try {
             const [staffRes, statsRes] = await Promise.all([
-                axios.get("http://localhost:5000/api/admin/staff", { signal }),
-                axios.get("http://localhost:5000/api/admin/stats", { signal })
+                axios.get(`${apiUrl}/admin/staff`, { signal }),
+                axios.get(`${apiUrl}/admin/stats`, { signal })
             ]);
             setStaff(Array.isArray(staffRes.data) ? staffRes.data : []);
             setStats(statsRes.data);
@@ -96,7 +97,7 @@ const AdminDashboard = () => {
         } finally {
             setLoading(false);
         }
-    }, []);
+    }, [apiUrl]);
 
     useEffect(() => {
         const controller = new AbortController();
@@ -109,7 +110,7 @@ const AdminDashboard = () => {
         setIsSubmitting(true);
         setActionMessage({ text: "", type: "" });
         try {
-            await axios.post("http://localhost:5000/api/admin/add-staff", formData);
+            await axios.post(`${apiUrl}/admin/add-staff`, formData);
             setActionMessage({ text: "Staff member added successfully!", type: "success" });
             setFormData({ username: "", password: "", role: "reception", name: "", specialization: "" });
             fetchData();

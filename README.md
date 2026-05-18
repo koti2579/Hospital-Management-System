@@ -121,6 +121,10 @@ cd Hospital-Management-System
    ```bash
    npm start
    ```
+4. Create a `.env` file in the `frontend` folder:
+   ```env
+   REACT_APP_API_URL=https://hospital-management-system-23e0.onrender.com/api
+   ```
 
 ---
 

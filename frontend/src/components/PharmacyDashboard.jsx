@@ -19,6 +19,7 @@ import "./Dashboard.css";
 
 const PharmacyDashboard = () => {
     const navigate = useNavigate();
+    const apiUrl = process.env.REACT_APP_API_URL || "https://hospital-management-system-23e0.onrender.com/api";
     const [prescriptions, setPrescriptions] = useState([]);
     const [inventory, setInventory] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -44,8 +45,8 @@ const PharmacyDashboard = () => {
         setError(null);
         try {
             const [prescRes, invRes] = await Promise.all([
-                axios.get("http://localhost:5000/api/pharmacy/prescriptions", { signal }),
-                axios.get("http://localhost:5000/api/pharmacy/inventory", { signal })
+                axios.get(`${apiUrl}/pharmacy/prescriptions`, { signal }),
+                axios.get(`${apiUrl}/pharmacy/inventory`, { signal })
             ]);
             setPrescriptions(Array.isArray(prescRes.data) ? prescRes.data : []);
             setInventory(Array.isArray(invRes.data) ? invRes.data : []);
@@ -56,7 +57,7 @@ const PharmacyDashboard = () => {
         } finally {
             setLoading(false);
         }
-    }, []);
+    }, [apiUrl]);
 
     useEffect(() => {
         const controller = new AbortController();
@@ -66,7 +67,7 @@ const PharmacyDashboard = () => {
 
     const handleIssue = async (id) => {
         try {
-            await axios.put(`http://localhost:5000/api/pharmacy/dispense/${id}`);
+            await axios.put(`${apiUrl}/pharmacy/dispense/${id}`);
             alert("Digital prescription finalized and medicines issued!");
             fetchData();
         } catch (err) {

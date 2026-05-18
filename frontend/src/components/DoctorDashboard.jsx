@@ -42,6 +42,7 @@ const TEST_CATALOG = {
 };
 
 const DoctorDashboard = () => {
+    const apiUrl = process.env.REACT_APP_API_URL || "https://hospital-management-system-23e0.onrender.com/api";
     const [patients, setPatients] = useState([]);
     const [selectedPatient, setSelectedPatient] = useState(null);
     const [labResults, setLabResults] = useState([]);
@@ -67,7 +68,7 @@ const DoctorDashboard = () => {
     const fetchPatients = useCallback(async (signal) => {
         if (!user?.id) return;
         try {
-            const res = await axios.get(`http://localhost:5000/api/doctor/patients/${user.id}`, { signal });
+            const res = await axios.get(`${apiUrl}/doctor/patients/${user.id}`, { signal });
             setPatients(res.data);
         } catch (err) {
             if (axios.isCancel(err)) return;
@@ -75,17 +76,17 @@ const DoctorDashboard = () => {
         } finally {
             setLoading(false);
         }
-    }, [user?.id]);
+    }, [user?.id, apiUrl]);
 
     const fetchLabResults = useCallback(async (patientId, signal) => {
         try {
-            const res = await axios.get(`http://localhost:5000/api/doctor/patient-results/${patientId}`, { signal });
+            const res = await axios.get(`${apiUrl}/doctor/patient-results/${patientId}`, { signal });
             setLabResults(res.data);
         } catch (err) {
             if (axios.isCancel(err)) return;
             console.error("Error fetching lab results:", err);
         }
-    }, []);
+    }, [apiUrl]);
 
     useEffect(() => {
         const controller = new AbortController();
@@ -106,7 +107,7 @@ const DoctorDashboard = () => {
     const handleRequestTests = async () => {
         if (selectedTests.length === 0) return;
         try {
-            await axios.post("http://localhost:5000/api/doctor/request-test", {
+            await axios.post(`${apiUrl}/doctor/request-test`, {
                 patientId: selectedPatient._id,
                 doctorId: user.id,
                 tests: selectedTests
@@ -123,7 +124,7 @@ const DoctorDashboard = () => {
     const handlePrescribe = async (e) => {
         e.preventDefault();
         try {
-            await axios.post("http://localhost:5000/api/doctor/prescribe", {
+            await axios.post(`${apiUrl}/doctor/prescribe`, {
                 patientId: selectedPatient._id,
                 doctorId: user.id,
                 medicines: prescription.medicines,

@@ -14,6 +14,7 @@ import {
 import "./Dashboard.css";
 
 const LabDashboard = () => {
+    const apiUrl = process.env.REACT_APP_API_URL || "https://hospital-management-system-23e0.onrender.com/api";
     const [tests, setTests] = useState([]);
     const [results, setResults] = useState({});
     const [loading, setLoading] = useState(true);
@@ -25,7 +26,7 @@ const LabDashboard = () => {
         setLoading(true);
         setError(null);
         try {
-            const res = await axios.get("http://localhost:5000/api/lab/tests", { signal });
+            const res = await axios.get(`${apiUrl}/lab/tests`, { signal });
             setTests(Array.isArray(res.data) ? res.data : []);
         } catch (err) {
             if (axios.isCancel(err)) return;
@@ -34,7 +35,7 @@ const LabDashboard = () => {
         } finally {
             setLoading(false);
         }
-    }, []);
+    }, [apiUrl]);
 
     useEffect(() => {
         const controller = new AbortController();
@@ -51,7 +52,7 @@ const LabDashboard = () => {
             return;
         }
         try {
-            await axios.put(`http://localhost:5000/api/lab/upload/${id}`, {
+            await axios.put(`${apiUrl}/lab/upload/${id}`, {
                 results: results[id]
             });
             alert("Diagnostic results uploaded successfully!");

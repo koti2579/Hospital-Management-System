@@ -13,7 +13,8 @@ function Login() {
     e.preventDefault();
     const controller = new AbortController();
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/login", { username, password }, { signal: controller.signal });
+      const apiUrl = process.env.REACT_APP_API_URL || "https://hospital-management-system-23e0.onrender.com/api";
+      const res = await axios.post(`${apiUrl}/auth/login`, { username, password }, { signal: controller.signal });
       const { token, user } = res.data;
       
       localStorage.setItem("token", token);

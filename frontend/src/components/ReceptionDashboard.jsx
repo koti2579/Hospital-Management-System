@@ -15,6 +15,7 @@ import "./Dashboard.css";
 
 const ReceptionDashboard = () => {
     const navigate = useNavigate();
+    const apiUrl = process.env.REACT_APP_API_URL || "https://hospital-management-system-23e0.onrender.com/api";
     const [doctors, setDoctors] = useState([]);
     const [patients, setPatients] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -50,8 +51,8 @@ const ReceptionDashboard = () => {
         setError(null);
         try {
             const [doctorsRes, patientsRes] = await Promise.all([
-                axios.get("http://localhost:5000/api/reception/doctors", { signal }),
-                axios.get("http://localhost:5000/api/reception/patients", { signal })
+                axios.get(`${apiUrl}/reception/doctors`, { signal }),
+                axios.get(`${apiUrl}/reception/patients`, { signal })
             ]);
             
             const doctorList = Array.isArray(doctorsRes.data) ? doctorsRes.data : [];
@@ -68,7 +69,7 @@ const ReceptionDashboard = () => {
         } finally {
             setLoading(false);
         }
-    }, [formData.assignedDoctor]);
+    }, [formData.assignedDoctor, apiUrl]);
 
     useEffect(() => {
         const controller = new AbortController();
@@ -87,7 +88,7 @@ const ReceptionDashboard = () => {
         setActionMessage({ text: "", type: "" });
         
         try {
-            await axios.post("http://localhost:5000/api/reception/register-patient", formData);
+            await axios.post(`${apiUrl}/reception/register-patient`, formData);
             setActionMessage({ text: "Patient profile synchronized successfully!", type: "success" });
             setFormData({
                 name: "",
