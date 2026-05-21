@@ -36,22 +36,26 @@ const allowedOrigins = [
 
 app.use(cors({
     origin: function (origin, callback) {
-        // allow requests with no origin (like mobile apps or curl requests)
         if (!origin) return callback(null, true);
         
         const isAllowed = allowedOrigins.includes(origin) || 
                          origin.endsWith('.vercel.app') || 
                          process.env.NODE_ENV !== 'production';
 
-        if (!isAllowed) {
-            return callback(new Error('CORS Not Allowed'), false);
+        if (isAllowed) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
         }
-        return callback(null, true);
     },
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true
+    credentials: true,
+    optionsSuccessStatus: 200
 }));
+
+// Handle preflight requests explicitly for all routes
+app.options('*', cors());
 app.use(express.json());
 
 // Routes
