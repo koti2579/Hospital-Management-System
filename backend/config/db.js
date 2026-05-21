@@ -2,8 +2,17 @@ const mongoose = require('mongoose');
 
 
 const connectDB = async () => {
-    const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/hms_db';
+    let MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/hms_db';
     
+    // Ensure hms_db is specified in the URI if not present
+    if (MONGO_URI.includes('mongodb+srv://') && !MONGO_URI.includes('.net/')) {
+        // Handle cases where the URI might end right after .net
+        MONGO_URI = MONGO_URI.replace('.net', '.net/hms_db');
+    } else if (MONGO_URI.includes('.net/?')) {
+        // Handle cases where there are query params but no DB name
+        MONGO_URI = MONGO_URI.replace('.net/?', '.net/hms_db?');
+    }
+
     // Mask URI for safe logging
     const maskedURI = MONGO_URI.replace(/\/\/.*@/, '//****:****@');
     console.log(`Attempting to connect to: ${maskedURI}`);
