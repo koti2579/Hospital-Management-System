@@ -15,8 +15,9 @@ function PatientLogin() {
       const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:5000/api";
       const res = await axios.post(`${apiUrl}/auth/patient-login`, { phoneNumber }, { withCredentials: true });
       
-      const { patient } = res.data;
+      const { patient, token } = res.data;
       localStorage.setItem("patient", JSON.stringify(patient));
+      if (token) localStorage.setItem("patientToken", token);
       
       alert(`Welcome ${patient.name}!`);
       navigate("/patient-dashboard");

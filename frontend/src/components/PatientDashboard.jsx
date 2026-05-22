@@ -17,10 +17,16 @@ const PatientDashboard = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
+                const token = localStorage.getItem("patientToken");
+                const config = {
+                    withCredentials: true,
+                    headers: token ? { Authorization: `Bearer ${token}` } : {}
+                };
+
                 const [profileRes, prescriptionRes, labRes] = await Promise.all([
-                    axios.get(`${apiUrl}/patient/profile`, { withCredentials: true }),
-                    axios.get(`${apiUrl}/patient/prescriptions`, { withCredentials: true }),
-                    axios.get(`${apiUrl}/patient/lab-tests`, { withCredentials: true })
+                    axios.get(`${apiUrl}/patient/profile`, config),
+                    axios.get(`${apiUrl}/patient/prescriptions`, config),
+                    axios.get(`${apiUrl}/patient/lab-tests`, config)
                 ]);
 
                 setPatient(profileRes.data);
@@ -40,8 +46,7 @@ const PatientDashboard = () => {
 
     const handleLogout = () => {
         localStorage.removeItem("patient");
-        // Clear cookie if possible from client-side (though it's httpOnly)
-        // Best practice is to have a logout route on backend
+        localStorage.removeItem("patientToken");
         navigate("/");
     };
 
