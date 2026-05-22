@@ -12,7 +12,7 @@ The Hospital Management System is built using the MERN stack (MongoDB, Express.j
 - **Framework**: React.js (v19)
 - **Routing**: React Router DOM
 - **State Management**: React Hooks (useState, useEffect)
-- **Styling**: CSS3 with custom dashboard layouts
+- **Styling**: CSS with custom dashboard layouts
 - **Data Visualization**: Chart.js & React-Chartjs-2
 - **Icons**: Lucide-React & React-Icons
 - **API Client**: Axios
