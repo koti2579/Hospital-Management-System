@@ -82,6 +82,9 @@ const Home = () => {
                     <button className="nav-btn admin-btn" onClick={() => navigate("/login?login=admin")}>
                         Admin Login
                     </button>
+                    <button className="nav-btn patient-btn" onClick={() => navigate("/patient-login")}>
+                        Patient Portal
+                    </button>
                 </div>
             </div>
             <div className="hero-section">

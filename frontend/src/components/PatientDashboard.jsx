@@ -22,7 +22,6 @@ const PatientDashboard = () => {
                     withCredentials: true,
                     headers: token ? { Authorization: `Bearer ${token}` } : {}
                 };
-
                 const [profileRes, prescriptionRes, labRes] = await Promise.all([
                     axios.get(`${apiUrl}/patient/profile`, config),
                     axios.get(`${apiUrl}/patient/prescriptions`, config),

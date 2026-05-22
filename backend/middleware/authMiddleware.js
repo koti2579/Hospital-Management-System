@@ -2,9 +2,7 @@ const jwt = require('jsonwebtoken');
 
 const authMiddleware = {
     verifyPatient: (req, res, next) => {
-        // Try cookie first, then Authorization header
         const token = req.cookies.patientToken || req.headers.authorization?.split(' ')[1];
-        
         if (!token) {
             return res.status(401).json({ message: 'Unauthorized: No token provided' });
         }

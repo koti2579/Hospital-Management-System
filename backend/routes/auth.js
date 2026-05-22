@@ -40,18 +40,17 @@ router.post('/patient-login', async (req, res) => {
         );
 
         // Set HTTP-only cookie
-        // For cross-site (Vercel -> Render), we need sameSite: 'none' and secure: true
         const isProduction = process.env.NODE_ENV === 'production';
         res.cookie('patientToken', token, {
             httpOnly: true,
-            secure: true, // Required for sameSite: 'none'
+             secure: true, // Required for sameSite: 'none'
             sameSite: 'none',
             maxAge: 24 * 60 * 60 * 1000 // 24 hours
         });
 
         res.json({ 
             message: 'Login successful',
-            token: token, // Also return token in body as fallback
+            token: token,
             patient: { 
                 id: patient._id, 
                 name: patient.name,

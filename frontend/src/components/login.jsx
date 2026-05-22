@@ -2,7 +2,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { FaUserShield, FaUserMd, FaArrowLeft } from "react-icons/fa";
 import "./login.css";
 
 function Login() {
@@ -11,7 +10,6 @@ function Login() {
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
-    // ... same login logic ...
     e.preventDefault();
     const controller = new AbortController();
     try {
@@ -24,6 +22,7 @@ function Login() {
       
       alert(`Welcome ${user.name}!`);
       
+      // Redirect based on role
       switch(user.role) {
         case 'admin': navigate("/admin"); break;
         case 'reception': navigate("/reception"); break;
@@ -39,64 +38,40 @@ function Login() {
   };
 
   return (
-    <div className="login-page-wrapper">
-      <aside className="login-sidebar">
-        <div className="sidebar-header">
-          <div className="sidebar-logo">
-            <FaUserShield size={24} />
-            <span>Admin Portal</span>
+    <div className="login-container">
+      <div className="login-card">
+        <h2>Hospital Management Login</h2>
+        <form onSubmit={handleLogin}>
+          <div className="form-group">
+            <label htmlFor="username">Username:</label>
+            <input
+              id="username"
+              type="text"
+              name="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
           </div>
-        </div>
-        <nav className="sidebar-nav">
-          <button className="nav-item active">
-            <FaUserShield size={18} />
-            <span>Staff Login</span>
+          <div className="form-group">
+            <label htmlFor="password">Password:</label>
+            <input
+              id="password"
+              type="password"
+              name="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+          <button type="submit" className="login-submit-btn">
+            Login
           </button>
-          <button className="nav-item patient-portal-btn" onClick={() => navigate("/patient-login")}>
-            <FaUserMd size={18} />
-            <span>Patient Portal</span>
-          </button>
-        </nav>
-        <div className="sidebar-footer">
-          <button className="back-home-btn" onClick={() => navigate("/")}>
-            <FaArrowLeft size={14} />
-            <span>Back to Home</span>
-          </button>
-        </div>
-      </aside>
-
-      <main className="login-main-content">
-        <div className="login-card">
-          <h2>Hospital Management Login</h2>
-          <form onSubmit={handleLogin}>
-            <div className="form-group">
-              <label htmlFor="username">Username:</label>
-              <input
-                id="username"
-                type="text"
-                name="username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="password">Password:</label>
-              <input
-                id="password"
-                type="password"
-                name="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </div>
-            <button type="submit" className="login-submit-btn">
-              Login
-            </button>
-          </form>
-        </div>
-      </main>
+        </form>
+        <button className="back-btn" onClick={() => navigate("/")}>
+          Back to Home
+        </button>
+      </div>
     </div>
   );
 }
