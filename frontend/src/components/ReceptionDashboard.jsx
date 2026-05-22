@@ -22,22 +22,31 @@ const ReceptionDashboard = () => {
     const [error, setError] = useState(null);
     const [formData, setFormData] = useState({
         name: "",
-        age: "",
+        dateOfBirth: "",
         gender: "Male",
+        phoneNumber: "",
         contact: "",
         temperature: "",
         symptoms: "",
-        assignedDoctor: ""
+        assignedDoctor: "",
+        careTeam: "",
+        medicalMetadata: {}
     });
     const [actionMessage, setActionMessage] = useState({ text: "", type: "" });
     const [isSubmitting, setIsSubmitting] = useState(false);
+
+    // Get auth token
+    const getAuthHeader = () => {
+        const token = localStorage.getItem("token");
+        return { headers: { Authorization: `Bearer ${token}` } };
+    };
 
     // Check for reception permissions
     useEffect(() => {
         try {
             const userData = localStorage.getItem("user");
             const user = (userData && userData !== "undefined") ? JSON.parse(userData) : null;
-            if (!user || user.role !== 'reception') {
+            if (!user || (user.role !== 'reception' && user.role !== 'admin')) {
                 navigate("/");
             }
         } catch (error) {
@@ -50,9 +59,10 @@ const ReceptionDashboard = () => {
         setLoading(true);
         setError(null);
         try {
+            const authHeader = getAuthHeader();
             const [doctorsRes, patientsRes] = await Promise.all([
-                axios.get(`${apiUrl}/reception/doctors`, { signal }),
-                axios.get(`${apiUrl}/reception/patients`, { signal })
+                axios.get(`${apiUrl}/reception/doctors`, { ...authHeader, signal }),
+                axios.get(`${apiUrl}/reception/patients`, { ...authHeader, signal })
             ]);
             
             const doctorList = Array.isArray(doctorsRes.data) ? doctorsRes.data : [];
@@ -65,7 +75,7 @@ const ReceptionDashboard = () => {
         } catch (err) {
             if (axios.isCancel(err)) return;
             console.error("Error fetching data", err);
-            setError("Connectivity issue detected. Please verify your backend server.");
+            setError("Connectivity issue detected. Please verify your authentication or backend server.");
         } finally {
             setLoading(false);
         }
@@ -88,20 +98,23 @@ const ReceptionDashboard = () => {
         setActionMessage({ text: "", type: "" });
         
         try {
-            await axios.post(`${apiUrl}/reception/register-patient`, formData);
+            await axios.post(`${apiUrl}/reception/register-patient`, formData, getAuthHeader());
             setActionMessage({ text: "Patient profile synchronized successfully!", type: "success" });
             setFormData({
                 name: "",
-                age: "",
+                dateOfBirth: "",
                 gender: "Male",
+                phoneNumber: "",
                 contact: "",
                 temperature: "",
                 symptoms: "",
-                assignedDoctor: doctors[0]?._id || ""
+                assignedDoctor: doctors[0]?._id || "",
+                careTeam: "",
+                medicalMetadata: {}
             });
             fetchData(); // Refresh list
         } catch (err) {
-            setActionMessage({ text: "Transmission error. Please attempt registration again.", type: "error" });
+            setActionMessage({ text: err.response?.data?.message || "Transmission error. Please attempt registration again.", type: "error" });
         } finally {
             setIsSubmitting(false);
         }
@@ -153,12 +166,11 @@ const ReceptionDashboard = () => {
                         
                         <div className="form-row">
                             <div className="form-group">
-                                <label>Age</label>
+                                <label>Date of Birth</label>
                                 <input 
-                                    type="number" 
-                                    placeholder="Years" 
-                                    value={formData.age} 
-                                    onChange={(e) => setFormData({...formData, age: e.target.value})} 
+                                    type="date" 
+                                    value={formData.dateOfBirth} 
+                                    onChange={(e) => setFormData({...formData, dateOfBirth: e.target.value})} 
                                     required 
                                 />
                             </div>
@@ -174,13 +186,34 @@ const ReceptionDashboard = () => {
 
                         <div className="form-row">
                             <div className="form-group">
-                                <label>Contact Number</label>
+                                <label>Phone Number (Login ID)</label>
+                                <input 
+                                    type="tel" 
+                                    placeholder="Unique mobile number" 
+                                    value={formData.phoneNumber} 
+                                    onChange={(e) => setFormData({...formData, phoneNumber: e.target.value})} 
+                                    required 
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label>Alternative Contact</label>
                                 <input 
                                     type="text" 
-                                    placeholder="Phone/Mobile" 
+                                    placeholder="Emergency/Secondary" 
                                     value={formData.contact} 
                                     onChange={(e) => setFormData({...formData, contact: e.target.value})} 
-                                    required 
+                                />
+                            </div>
+                        </div>
+
+                        <div className="form-row">
+                            <div className="form-group">
+                                <label>Care Team</label>
+                                <input 
+                                    type="text" 
+                                    placeholder="e.g. Cardiology" 
+                                    value={formData.careTeam} 
+                                    onChange={(e) => setFormData({...formData, careTeam: e.target.value})} 
                                 />
                             </div>
                             <div className="form-group">
@@ -252,7 +285,7 @@ const ReceptionDashboard = () => {
                                         </div>
                                         <div className="patient-meta">
                                             <h3>{p.name}</h3>
-                                            <p>{p.age}y • {p.gender}</p>
+                                            <p>{p.phoneNumber} • {p.gender}</p>
                                         </div>
                                     </div>
                                     <div className="workflow-card-right">

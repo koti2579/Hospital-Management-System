@@ -17,6 +17,11 @@ const prescriptionQueries = {
             .populate('doctorId');
     },
 
+    getPrescriptionsByPatient: async (patientId) => {
+        return await Prescription.find({ patientId })
+            .populate('doctorId', 'name');
+    },
+
     dispensePrescription: async (id) => {
         return await Prescription.findByIdAndUpdate(id, { status: 'dispensed' }, { new: true });
     }

@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
@@ -20,6 +21,7 @@ const doctorRoutes = require('./routes/doctor');
 const labRoutes = require('./routes/lab');
 const pharmacyRoutes = require('./routes/pharmacy');
 const receptionRoutes = require('./routes/reception');
+const patientRoutes = require('./routes/patient');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -55,6 +57,7 @@ app.use(cors({
 }));
 
 app.use(express.json());
+app.use(cookieParser());
 
 // Routes
 app.use('/api/auth', authRoutes);
@@ -63,6 +66,7 @@ app.use('/api/doctor', doctorRoutes);
 app.use('/api/lab', labRoutes);
 app.use('/api/pharmacy', pharmacyRoutes);
 app.use('/api/reception', receptionRoutes);
+app.use('/api/patient', patientRoutes);
 
 // Fallback 404
 app.use((req, res) => {

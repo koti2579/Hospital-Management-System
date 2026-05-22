@@ -96,10 +96,9 @@ cd Hospital-Management-System
 3. Create a `.env` file in the `backend` folder:
    ```env
    PORT=5000
-   MONGO_URI=mongodb+srv://<username>:<password>@cluster0.example.mongodb.net/hms_db?retryWrites=true&w=majority
+   MONGO_URI=mongodb://localhost:27017/hms_db
    JWT_SECRET=your_jwt_secret_key
    ```
-   *Note: Ensure special characters in your password are URL-encoded if you face authentication issues.*
 4. Seed the database (Optional but recommended for testing):
    ```bash
    node seed.js

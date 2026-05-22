@@ -15,6 +15,14 @@ const patientQueries = {
         return await newPatient.save();
     },
 
+    findByPhoneNumber: async (phoneNumber) => {
+        return await Patient.findOne({ phoneNumber });
+    },
+
+    getPatientById: async (id) => {
+        return await Patient.findById(id).populate('assignedDoctor', 'name');
+    },
+
     getPatientsByDoctorAndStatus: async (doctorId, statuses) => {
         return await Patient.find({ 
             assignedDoctor: doctorId, 

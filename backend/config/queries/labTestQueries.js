@@ -9,6 +9,11 @@ const labTestQueries = {
         return await LabTest.find({ patientId, status: 'completed' });
     },
 
+    getAllTestsByPatient: async (patientId) => {
+        return await LabTest.find({ patientId })
+            .populate('doctorId', 'name');
+    },
+
     createMany: async (tests) => {
         return await LabTest.insertMany(tests);
     },
