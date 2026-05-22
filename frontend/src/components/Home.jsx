@@ -77,16 +77,6 @@ const Home = () => {
 
     return (
         <div className="home-container">
-            <div className="top-nav">
-                <div className="auth-buttons">
-                    <button className="nav-btn admin-btn" onClick={() => navigate("/login?login=admin")}>
-                        Admin Login
-                    </button>
-                    <button className="nav-btn patient-btn" onClick={() => navigate("/patient-login")}>
-                        Patient Portal
-                    </button>
-                </div>
-            </div>
             <div className="hero-section">
                 <div className="hero-badge">
                     <Activity size={20} />

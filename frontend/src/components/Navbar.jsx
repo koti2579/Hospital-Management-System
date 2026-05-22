@@ -48,10 +48,16 @@ const Navbar = () => {
             </button>
           </div>
         ) : (
-          <button className="login-btn" onClick={handleAdminLogin}>
-            <FaLock className="lock-icon" />
-            <span>Admin Login</span>
-          </button>
+          <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+            <button className="login-btn" onClick={() => navigate("/patient-login")} style={{ background: 'white', color: '#10b981', border: '2px solid #10b981' }}>
+              <FaLock className="lock-icon" />
+              <span>Patient Portal</span>
+            </button>
+            <button className="login-btn" onClick={handleAdminLogin}>
+              <FaLock className="lock-icon" />
+              <span>Admin Login</span>
+            </button>
+          </div>
         )}
       </div>
     </header>
